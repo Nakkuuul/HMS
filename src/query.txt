@@ -1,0 +1,68 @@
+-- Create Database
+CREATE DATABASE HotelManagement;
+
+-- Use Database
+USE HotelManagement;
+
+-- Guests Table
+CREATE TABLE Guests (
+    GuestID INT AUTO_INCREMENT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Phone VARCHAR(15),
+    Email VARCHAR(100),
+    Address TEXT
+);
+
+-- Rooms Table
+CREATE TABLE Rooms (
+    RoomID INT AUTO_INCREMENT PRIMARY KEY,
+    RoomNumber VARCHAR(10) UNIQUE,
+    RoomType VARCHAR(50),        -- Example: Single, Double, Suite
+    BedType VARCHAR(20),          -- Example: King, Queen, Twin
+    PricePerNight DECIMAL(10,2),
+    Status VARCHAR(20) DEFAULT 'Available'  -- Available, Booked, Maintenance
+);
+
+-- Staff Table (with Login Info)
+CREATE TABLE Staff (
+    StaffID INT AUTO_INCREMENT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Role VARCHAR(50),             -- Example: Receptionist, Manager, Housekeeping
+    Phone VARCHAR(15),
+    Email VARCHAR(100),
+    Password VARCHAR(255)         -- Password for login (should be hashed in real apps)
+);
+
+-- Bookings Table
+CREATE TABLE Bookings (
+    BookingID INT AUTO_INCREMENT PRIMARY KEY,
+    GuestID INT,
+    RoomID INT,
+    CheckInDate DATE,
+    CheckOutDate DATE,
+    NumberOfGuests INT,
+    BookingDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    TotalAmount DECIMAL(10,2),
+    PaymentStatus VARCHAR(20) DEFAULT 'Pending', -- Pending, Paid, Cancelled
+    FOREIGN KEY (GuestID) REFERENCES Guests(GuestID),
+    FOREIGN KEY (RoomID) REFERENCES Rooms(RoomID)
+);
+
+-- Services Table (Room Service, Food, Laundry, etc.)
+CREATE TABLE Services (
+    ServiceID INT AUTO_INCREMENT PRIMARY KEY,
+    ServiceName VARCHAR(100),
+    ServicePrice DECIMAL(10,2)
+);
+
+-- Guest Services Table (services used by guests)
+CREATE TABLE GuestServices (
+    GuestServiceID INT AUTO_INCREMENT PRIMARY KEY,
+    GuestID INT,
+    ServiceID INT,
+    ServiceDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (GuestID) REFERENCES Guests(GuestID),
+    FOREIGN KEY (ServiceID) REFERENCES Services(ServiceID)
+);
